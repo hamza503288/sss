@@ -472,6 +472,77 @@ export const updateCreditPayment = async (id: number, montantPaiement: number): 
   }
 };
 
+// FONCTIONS DE SUPPRESSION
+
+// Fonction pour supprimer un contrat de la table rapport
+export const deleteRapportContract = async (id: number): Promise<boolean> => {
+  try {
+    console.log('🗑️ Suppression du contrat rapport...');
+
+    const { error } = await supabase
+      .from('rapport')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('❌ Erreur suppression rapport:', error);
+      return false;
+    }
+
+    console.log('✅ Contrat rapport supprimé');
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur générale suppression rapport:', error);
+    return false;
+  }
+};
+
+// Fonction pour supprimer un contrat Affaire
+export const deleteAffaireContract = async (id: number): Promise<boolean> => {
+  try {
+    console.log('🗑️ Suppression du contrat Affaire...');
+
+    const { error } = await supabase
+      .from('affaire')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('❌ Erreur suppression Affaire:', error);
+      return false;
+    }
+
+    console.log('✅ Contrat Affaire supprimé');
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur générale suppression Affaire:', error);
+    return false;
+  }
+};
+
+// Fonction pour supprimer un contrat Terme
+export const deleteTermeContract = async (id: number): Promise<boolean> => {
+  try {
+    console.log('🗑️ Suppression du contrat Terme...');
+
+    const { error } = await supabase
+      .from('terme')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('❌ Erreur suppression Terme:', error);
+      return false;
+    }
+
+    console.log('✅ Contrat Terme supprimé');
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur générale suppression Terme:', error);
+    return false;
+  }
+};
+
 // FONCTIONS UTILITAIRES
 
 // Fonction pour créer une table mensuelle
@@ -581,6 +652,9 @@ export default {
   getAvailableMonths,
   updateCreditStatus,
   updateCreditPayment,
+  deleteRapportContract,
+  deleteAffaireContract,
+  deleteTermeContract,
   createMonthlyTable,
   insertContractsToTable,
   searchCreditByContractNumber

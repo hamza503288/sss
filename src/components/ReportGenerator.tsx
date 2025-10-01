@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Download, Calendar, DollarSign, FileText, Users } from 'lucide-react';
+import { BarChart3, Download, Calendar, DollarSign, FileText, Users, Trash2 } from 'lucide-react';
 import { getContracts, exportToXLSX } from '../utils/storage';
 import { Contract } from '../types';
-import { getAffaireContracts, getRapportContracts, getTermeContracts } from '../utils/supabaseService';
+import { getAffaireContracts, getRapportContracts, getTermeContracts, deleteRapportContract, deleteAffaireContract, deleteTermeContract } from '../utils/supabaseService';
 import { getSessionDate } from '../utils/auth';
 
 const ReportGenerator: React.FC = () => {
@@ -173,9 +173,48 @@ const ReportGenerator: React.FC = () => {
       createdBy: contract.cree_par,
       createdAt: new Date(contract.created_at).getTime()
     }));
-    
+
     const filename = `rapport_contrats_${new Date().toISOString().split('T')[0]}.xlsx`;
     exportToXLSX(contractsForExport, filename);
+  };
+
+  const handleDeleteRapport = async (id: number) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat du rapport ?')) {
+      return;
+    }
+
+    const success = await deleteRapportContract(id);
+    if (success) {
+      loadRapportContracts();
+    } else {
+      alert('Erreur lors de la suppression du contrat');
+    }
+  };
+
+  const handleDeleteAffaire = async (id: number) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Affaire ?')) {
+      return;
+    }
+
+    const success = await deleteAffaireContract(id);
+    if (success) {
+      loadAffaireContracts();
+    } else {
+      alert('Erreur lors de la suppression du contrat');
+    }
+  };
+
+  const handleDeleteTerme = async (id: number) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Terme ?')) {
+      return;
+    }
+
+    const success = await deleteTermeContract(id);
+    if (success) {
+      loadTermeContracts();
+    } else {
+      alert('Erreur lors de la suppression du contrat');
+    }
   };
 
   const stats = calculateStats();
@@ -440,6 +479,9 @@ const ReportGenerator: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
                       Date Paiement
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-blue-600 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -462,6 +504,15 @@ const ReportGenerator: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(contract.date_paiement).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <button
+                          onClick={() => handleDeleteTerme(contract.id)}
+                          className="text-red-600 hover:text-red-800 transition-colors"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -502,6 +553,9 @@ const ReportGenerator: React.FC = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-green-600 uppercase tracking-wider">
                       Date
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-green-600 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -535,6 +589,15 @@ const ReportGenerator: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {new Date(contract.created_at).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <button
+                          onClick={() => handleDeleteAffaire(contract.id)}
+                          className="text-red-600 hover:text-red-800 transition-colors"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -600,6 +663,9 @@ const ReportGenerator: React.FC = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Date
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -634,8 +700,8 @@ const ReportGenerator: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      contract.type_paiement === 'Au comptant' 
-                        ? 'bg-green-100 text-green-800' 
+                      contract.type_paiement === 'Au comptant'
+                        ? 'bg-green-100 text-green-800'
                         : 'bg-orange-100 text-orange-800'
                     }`}>
                       {contract.type_paiement}
@@ -671,6 +737,15 @@ const ReportGenerator: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {new Date(contract.created_at).toLocaleDateString('fr-FR')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <button
+                      onClick={() => handleDeleteRapport(contract.id)}
+                      className="text-red-600 hover:text-red-800 transition-colors"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </td>
                 </tr>
               ))}
