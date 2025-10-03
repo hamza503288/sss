@@ -475,18 +475,58 @@ export const updateCreditPayment = async (id: number, montantPaiement: number): 
 // FONCTIONS DE SUPPRESSION
 
 // Fonction pour supprimer un contrat de la table rapport
-export const deleteRapportContract = async (id: number): Promise<boolean> => {
+export const deleteRapportContract = async (id: number, numeroContrat: string): Promise<boolean> => {
   try {
-    console.log('🗑️ Suppression du contrat rapport...');
+    console.log('🗑️ Suppression du contrat rapport et des tables liées...');
 
-    const { error } = await supabase
+    const { data: contract, error: fetchError } = await supabase
+      .from('rapport')
+      .select('type, numero_contrat')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('❌ Erreur récupération contrat:', fetchError);
+      return false;
+    }
+
+    if (!contract) {
+      console.error('❌ Contrat non trouvé');
+      return false;
+    }
+
+    const { error: rapportError } = await supabase
       .from('rapport')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      console.error('❌ Erreur suppression rapport:', error);
+    if (rapportError) {
+      console.error('❌ Erreur suppression rapport:', rapportError);
       return false;
+    }
+
+    if (contract.type === 'Terme') {
+      const { error: termeError } = await supabase
+        .from('terme')
+        .delete()
+        .eq('numero_contrat', contract.numero_contrat);
+
+      if (termeError) {
+        console.warn('⚠️ Erreur suppression terme:', termeError);
+      } else {
+        console.log('✅ Contrat Terme supprimé');
+      }
+    } else if (contract.type === 'Affaire') {
+      const { error: affaireError } = await supabase
+        .from('affaire')
+        .delete()
+        .eq('numero_contrat', contract.numero_contrat);
+
+      if (affaireError) {
+        console.warn('⚠️ Erreur suppression affaire:', affaireError);
+      } else {
+        console.log('✅ Contrat Affaire supprimé');
+      }
     }
 
     console.log('✅ Contrat rapport supprimé');
@@ -497,19 +537,47 @@ export const deleteRapportContract = async (id: number): Promise<boolean> => {
   }
 };
 
-// Fonction pour supprimer un contrat Affaire
+// Fonction pour supprimer un contrat Affaire (supprime aussi du rapport)
 export const deleteAffaireContract = async (id: number): Promise<boolean> => {
   try {
-    console.log('🗑️ Suppression du contrat Affaire...');
+    console.log('🗑️ Suppression du contrat Affaire et du rapport...');
 
-    const { error } = await supabase
+    const { data: contract, error: fetchError } = await supabase
+      .from('affaire')
+      .select('numero_contrat')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('❌ Erreur récupération contrat:', fetchError);
+      return false;
+    }
+
+    if (!contract) {
+      console.error('❌ Contrat non trouvé');
+      return false;
+    }
+
+    const { error: affaireError } = await supabase
       .from('affaire')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      console.error('❌ Erreur suppression Affaire:', error);
+    if (affaireError) {
+      console.error('❌ Erreur suppression Affaire:', affaireError);
       return false;
+    }
+
+    const { error: rapportError } = await supabase
+      .from('rapport')
+      .delete()
+      .eq('numero_contrat', contract.numero_contrat)
+      .eq('type', 'Affaire');
+
+    if (rapportError) {
+      console.warn('⚠️ Erreur suppression rapport:', rapportError);
+    } else {
+      console.log('✅ Contrat rapport supprimé');
     }
 
     console.log('✅ Contrat Affaire supprimé');
@@ -520,19 +588,47 @@ export const deleteAffaireContract = async (id: number): Promise<boolean> => {
   }
 };
 
-// Fonction pour supprimer un contrat Terme
+// Fonction pour supprimer un contrat Terme (supprime aussi du rapport)
 export const deleteTermeContract = async (id: number): Promise<boolean> => {
   try {
-    console.log('🗑️ Suppression du contrat Terme...');
+    console.log('🗑️ Suppression du contrat Terme et du rapport...');
 
-    const { error } = await supabase
+    const { data: contract, error: fetchError } = await supabase
+      .from('terme')
+      .select('numero_contrat')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('❌ Erreur récupération contrat:', fetchError);
+      return false;
+    }
+
+    if (!contract) {
+      console.error('❌ Contrat non trouvé');
+      return false;
+    }
+
+    const { error: termeError } = await supabase
       .from('terme')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      console.error('❌ Erreur suppression Terme:', error);
+    if (termeError) {
+      console.error('❌ Erreur suppression Terme:', termeError);
       return false;
+    }
+
+    const { error: rapportError } = await supabase
+      .from('rapport')
+      .delete()
+      .eq('numero_contrat', contract.numero_contrat)
+      .eq('type', 'Terme');
+
+    if (rapportError) {
+      console.warn('⚠️ Erreur suppression rapport:', rapportError);
+    } else {
+      console.log('✅ Contrat rapport supprimé');
     }
 
     console.log('✅ Contrat Terme supprimé');

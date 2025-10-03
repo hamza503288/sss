@@ -178,40 +178,44 @@ const ReportGenerator: React.FC = () => {
     exportToXLSX(contractsForExport, filename);
   };
 
-  const handleDeleteRapport = async (id: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat du rapport ?')) {
+  const handleDeleteRapport = async (id: number, numeroContrat: string) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat du rapport et des tables liées ?')) {
       return;
     }
 
-    const success = await deleteRapportContract(id);
+    const success = await deleteRapportContract(id, numeroContrat);
     if (success) {
       loadRapportContracts();
+      loadAffaireContracts();
+      loadTermeContracts();
     } else {
       alert('Erreur lors de la suppression du contrat');
     }
   };
 
   const handleDeleteAffaire = async (id: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Affaire ?')) {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Affaire et du rapport ?')) {
       return;
     }
 
     const success = await deleteAffaireContract(id);
     if (success) {
       loadAffaireContracts();
+      loadRapportContracts();
     } else {
       alert('Erreur lors de la suppression du contrat');
     }
   };
 
   const handleDeleteTerme = async (id: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Terme ?')) {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce contrat Terme et du rapport ?')) {
       return;
     }
 
     const success = await deleteTermeContract(id);
     if (success) {
       loadTermeContracts();
+      loadRapportContracts();
     } else {
       alert('Erreur lors de la suppression du contrat');
     }
@@ -740,7 +744,7 @@ const ReportGenerator: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     <button
-                      onClick={() => handleDeleteRapport(contract.id)}
+                      onClick={() => handleDeleteRapport(contract.id, contract.numero_contrat)}
                       className="text-red-600 hover:text-red-800 transition-colors"
                       title="Supprimer"
                     >
