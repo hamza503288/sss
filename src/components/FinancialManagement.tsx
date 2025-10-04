@@ -194,6 +194,7 @@ const FinancialManagement: React.FC<FinancialManagementProps> = ({ username }) =
         numero_contrat: '',
         client: '',
         montant_ristourne: '',
+        date_paiement_ristourne:'',
         date_ristourne: new Date().toISOString().split('T')[0]
       });
       loadData();
