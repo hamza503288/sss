@@ -183,6 +183,7 @@ const FinancialManagement: React.FC<FinancialManagementProps> = ({ username }) =
       client: newRistourne.client,
       montant_ristourne: parseFloat(newRistourne.montant_ristourne),
       date_ristourne: newRistourne.date_ristourne,
+      created_at:new Date().toISOString().split('T')[0],
       cree_par: username
     };
 
@@ -222,6 +223,7 @@ const FinancialManagement: React.FC<FinancialManagementProps> = ({ username }) =
       montant: parseFloat(newSinistre.montant),
       client: newSinistre.client,
       date_sinistre: newSinistre.date_sinistre,
+      created_at:new Date().toISOString().split('T')[0],
       cree_par: username
     };
 

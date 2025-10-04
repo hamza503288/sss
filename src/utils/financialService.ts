@@ -121,7 +121,8 @@ export const saveRecetteExceptionnelle = async (recette: RecetteExceptionnelle):
         type_recette: recette.type_recette,
         montant: recette.montant,
         date_recette: recette.date_recette || new Date().toISOString().split('T')[0],
-        cree_par: recette.cree_par
+        cree_par: recette.cree_par,
+        created_at:new Date().toISOString().split('T')[0]
       }])
       .select();
 
@@ -231,8 +232,9 @@ export const saveRistourne = async (ristourne: Ristourne): Promise<boolean> => {
         client: ristourne.client,
         montant_ristourne: ristourne.montant_ristourne,
         date_ristourne: ristourne.date_ristourne || new Date().toISOString().split('T')[0],
-        date_paiement_ristourne: new Date().toISOString().split('T')[0], // Date courante
-        cree_par: ristourne.cree_par
+        date_paiement_ristourne: ristourne.date_ristourne,
+        cree_par: ristourne.cree_par,
+        created_at: new Date().toISOString().split('T')[0]
       }])
       .select();
 
@@ -257,6 +259,7 @@ export const saveRistourne = async (ristourne: Ristourne): Promise<boolean> => {
       }, {
         date_ristourne: ristourne.date_ristourne,
         date_paiement_ristourne: data[0].date_paiement_ristourne,
+        created_at: new Date().toISOString().split('T')[0],
         client: ristourne.client
       });
     } catch (rapportError) {
