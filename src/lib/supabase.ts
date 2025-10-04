@@ -34,7 +34,7 @@ export type Database = {
           prime: number
           assure: string
           echeance: string
-          date_paiement_ristoune:date
+       
           
         }
         Update: {
