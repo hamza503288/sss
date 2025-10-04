@@ -1,4 +1,4 @@
-mport { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 // Types pour les données financières
 export interface Depense {
