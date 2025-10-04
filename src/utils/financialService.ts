@@ -334,7 +334,7 @@ export const saveSinistre = async (sinistre: Sinistre): Promise<boolean> => {
         montant: sinistre.montant,
         client: sinistre.client,
         date_sinistre: sinistre.date_sinistre || new Date().toISOString().split('T')[0],
-        date_paiement_sinistre: new Date().toISOString().split('T')[0], // Date courante
+        created_at: new Date().toISOString().split('T')[0], // Date courante
         cree_par: sinistre.cree_par
       }])
       .select();
@@ -361,7 +361,8 @@ export const saveSinistre = async (sinistre: Sinistre): Promise<boolean> => {
         date_sinistre: sinistre.date_sinistre,
         date_paiement_sinistre: data[0].date_paiement_sinistre,
         numero_sinistre: sinistre.numero_sinistre,
-        client: sinistre.client
+        client: sinistre.client,
+        created_at: new Date().toISOString().split('T')[0], // Date courante
       });
     } catch (rapportError) {
       console.error('⚠️ Erreur lors de la sauvegarde dans rapport:', rapportError);
