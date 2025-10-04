@@ -232,9 +232,9 @@ export const saveRistourne = async (ristourne: Ristourne): Promise<boolean> => {
         client: ristourne.client,
         montant_ristourne: ristourne.montant_ristourne,
         date_ristourne: ristourne.date_ristourne || new Date().toISOString().split('T')[0],
-        date_paiement_ristourne: ristourne.date_ristourne,
+           created_at:: ristourne.date_ristourne,
         cree_par: ristourne.cree_par,
-        created_at: new Date().toISOString().split('T')[0]
+   
       }])
       .select();
 
