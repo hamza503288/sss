@@ -256,12 +256,12 @@ export const saveRistourne = async (ristourne: Ristourne): Promise<boolean> => {
         mode_paiement: 'Espece',
         type_paiement: 'Au comptant',
         cree_par: ristourne.cree_par,
-        client:ristourne.client 
+         
       }, {
         date_ristourne: ristourne.date_ristourne,
         date_paiement_ristourne: new Date().toISOString().split('T')[0],
         created_at: new Date().toISOString().split('T')[0],
-        
+        client:ristourne.client
 
       });
     } catch (rapportError) {
