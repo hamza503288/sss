@@ -261,6 +261,7 @@ export const saveRistourne = async (ristourne: Ristourne): Promise<boolean> => {
         date_ristourne: ristourne.date_ristourne,
         date_paiement_ristourne: new Date().toISOString().split('T')[0],
         created_at: new Date().toISOString().split('T')[0],
+        client:ristourne.client 
 
       });
     } catch (rapportError) {
